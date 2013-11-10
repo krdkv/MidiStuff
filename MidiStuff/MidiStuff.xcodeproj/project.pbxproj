@@ -22,6 +22,14 @@
 		01BD4B0D182E2C05008A595A /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 01BD4B0B182E2C05008A595A /* InfoPlist.strings */; };
 		01BD4B0F182E2C05008A595A /* MidiStuffTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 01BD4B0E182E2C05008A595A /* MidiStuffTests.m */; };
 		01BD4B1A182E2C94008A595A /* GridView.m in Sources */ = {isa = PBXBuildFile; fileRef = 01BD4B19182E2C94008A595A /* GridView.m */; };
+		01BD4B26182F1D68008A595A /* arp.aupreset in Resources */ = {isa = PBXBuildFile; fileRef = 01BD4B1C182F1D68008A595A /* arp.aupreset */; };
+		01BD4B27182F1D68008A595A /* MidiClip.m in Sources */ = {isa = PBXBuildFile; fileRef = 01BD4B1E182F1D68008A595A /* MidiClip.m */; };
+		01BD4B28182F1D68008A595A /* MidiLauncher.m in Sources */ = {isa = PBXBuildFile; fileRef = 01BD4B20182F1D68008A595A /* MidiLauncher.m */; };
+		01BD4B29182F1D68008A595A /* MidiMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 01BD4B22182F1D68008A595A /* MidiMessage.m */; };
+		01BD4B2A182F1D68008A595A /* MidiPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 01BD4B24182F1D68008A595A /* MidiPlayer.m */; };
+		01BD4B2B182F1D68008A595A /* snare.aupreset in Resources */ = {isa = PBXBuildFile; fileRef = 01BD4B25182F1D68008A595A /* snare.aupreset */; };
+		01BD4B2D182F1D7E008A595A /* Sounds in Resources */ = {isa = PBXBuildFile; fileRef = 01BD4B2C182F1D7E008A595A /* Sounds */; };
+		01BD4B2F182F203E008A595A /* horn.aupreset in Resources */ = {isa = PBXBuildFile; fileRef = 01BD4B2E182F203E008A595A /* horn.aupreset */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -56,6 +64,18 @@
 		01BD4B0E182E2C05008A595A /* MidiStuffTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MidiStuffTests.m; sourceTree = "<group>"; };
 		01BD4B18182E2C94008A595A /* GridView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GridView.h; sourceTree = "<group>"; };
 		01BD4B19182E2C94008A595A /* GridView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GridView.m; sourceTree = "<group>"; };
+		01BD4B1C182F1D68008A595A /* arp.aupreset */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = arp.aupreset; sourceTree = "<group>"; };
+		01BD4B1D182F1D68008A595A /* MidiClip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MidiClip.h; sourceTree = "<group>"; };
+		01BD4B1E182F1D68008A595A /* MidiClip.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MidiClip.m; sourceTree = "<group>"; };
+		01BD4B1F182F1D68008A595A /* MidiLauncher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MidiLauncher.h; sourceTree = "<group>"; };
+		01BD4B20182F1D68008A595A /* MidiLauncher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MidiLauncher.m; sourceTree = "<group>"; };
+		01BD4B21182F1D68008A595A /* MidiMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MidiMessage.h; sourceTree = "<group>"; };
+		01BD4B22182F1D68008A595A /* MidiMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MidiMessage.m; sourceTree = "<group>"; };
+		01BD4B23182F1D68008A595A /* MidiPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MidiPlayer.h; sourceTree = "<group>"; };
+		01BD4B24182F1D68008A595A /* MidiPlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MidiPlayer.m; sourceTree = "<group>"; };
+		01BD4B25182F1D68008A595A /* snare.aupreset */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = snare.aupreset; sourceTree = "<group>"; };
+		01BD4B2C182F1D7E008A595A /* Sounds */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Sounds; sourceTree = "<group>"; };
+		01BD4B2E182F203E008A595A /* horn.aupreset */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = horn.aupreset; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -115,6 +135,18 @@
 		01BD4AE9182E2C05008A595A /* MidiStuff */ = {
 			isa = PBXGroup;
 			children = (
+				01BD4B2E182F203E008A595A /* horn.aupreset */,
+				01BD4B2C182F1D7E008A595A /* Sounds */,
+				01BD4B1C182F1D68008A595A /* arp.aupreset */,
+				01BD4B1D182F1D68008A595A /* MidiClip.h */,
+				01BD4B1E182F1D68008A595A /* MidiClip.m */,
+				01BD4B1F182F1D68008A595A /* MidiLauncher.h */,
+				01BD4B20182F1D68008A595A /* MidiLauncher.m */,
+				01BD4B21182F1D68008A595A /* MidiMessage.h */,
+				01BD4B22182F1D68008A595A /* MidiMessage.m */,
+				01BD4B23182F1D68008A595A /* MidiPlayer.h */,
+				01BD4B24182F1D68008A595A /* MidiPlayer.m */,
+				01BD4B25182F1D68008A595A /* snare.aupreset */,
 				01BD4AF2182E2C05008A595A /* AppDelegate.h */,
 				01BD4AF3182E2C05008A595A /* AppDelegate.m */,
 				01BD4AF5182E2C05008A595A /* Main.storyboard */,
@@ -233,8 +265,12 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				01BD4B2D182F1D7E008A595A /* Sounds in Resources */,
 				01BD4AFC182E2C05008A595A /* Images.xcassets in Resources */,
+				01BD4B2F182F203E008A595A /* horn.aupreset in Resources */,
+				01BD4B2B182F1D68008A595A /* snare.aupreset in Resources */,
 				01BD4AEE182E2C05008A595A /* InfoPlist.strings in Resources */,
+				01BD4B26182F1D68008A595A /* arp.aupreset in Resources */,
 				01BD4AF7182E2C05008A595A /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -257,7 +293,11 @@
 				01BD4AFA182E2C05008A595A /* ViewController.m in Sources */,
 				01BD4AF4182E2C05008A595A /* AppDelegate.m in Sources */,
 				01BD4B1A182E2C94008A595A /* GridView.m in Sources */,
+				01BD4B29182F1D68008A595A /* MidiMessage.m in Sources */,
 				01BD4AF0182E2C05008A595A /* main.m in Sources */,
+				01BD4B28182F1D68008A595A /* MidiLauncher.m in Sources */,
+				01BD4B27182F1D68008A595A /* MidiClip.m in Sources */,
+				01BD4B2A182F1D68008A595A /* MidiPlayer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

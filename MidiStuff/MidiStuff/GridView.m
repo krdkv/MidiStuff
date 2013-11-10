@@ -105,6 +105,11 @@ typedef struct Cell Cell;
     }
 }
 
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
+    currentBlock.x = -1;
+    currentBlock.y = -1;
+}
+
 - (void) registerTouch:(UITouch*)touch {
     
     CGFloat x = [touch locationInView:self].x;
