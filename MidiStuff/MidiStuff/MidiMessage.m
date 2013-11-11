@@ -33,12 +33,12 @@
 }
 
 - (BOOL) isEqualToMessage:(MidiMessage*)message {
-    return message.type == self.type && self.velocity == message.velocity &&
+    return message.type == self.type &&
         message.midiKey == self.midiKey;
 }
 
 - (NSString*) description {
-    return [NSString stringWithFormat:@"<%@ key:%ld velocity:%ld>", kMessageNames[self.type], self.midiKey, self.velocity];
+    return [NSString stringWithFormat:@"<%@ key:%ld velocity:%ld>", kMessageNames[self.type], (long)self.midiKey, (long)self.velocity];
 }
 
 @end

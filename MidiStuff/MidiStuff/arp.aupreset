@@ -390,8 +390,6 @@
 	<data>AAAAAAAAAAAAAAAEAAADhAAAAAAAAAOFAAAAAAAAA4YAAAAAAAADhwAAAAA=</data>
 	<key>file-references</key>
 	<dict>
-		<key>Sample:268435457</key>
-		<string>/Users/nick/Library/Audio/Sounds/arp_c1.caf</string>
 		<key>Sample:268435458</key>
 		<string>/Users/nick/Library/Audio/Sounds/arp_c2.caf</string>
 		<key>Sample:268435459</key>

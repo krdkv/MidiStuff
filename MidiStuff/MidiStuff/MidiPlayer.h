@@ -17,4 +17,7 @@
 - (void) forwardMessage:(MidiMessage*)message
          withInstrument:(Instrument)instrument;
 
+- (void) start;
+- (void) stop;
+
 @end

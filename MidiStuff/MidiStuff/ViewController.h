@@ -8,8 +8,9 @@
 
 #import <UIKit/UIKit.h>
 #import "GridView.h"
+#import "MidiLauncher.h"
 
-@interface ViewController : UIViewController <GridViewDelegate>
+@interface ViewController : UIViewController <GridViewDelegate, MidiLauncherProgressDelegate>
 
 @property (nonatomic, strong) IBOutlet GridView * gridView;
 

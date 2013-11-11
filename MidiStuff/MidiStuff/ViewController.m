@@ -15,6 +15,7 @@
 @interface ViewController () {
     MidiLauncher * launcher;
     MidiClip * snareClip;
+    UIView * progressLine;
 }
 
 @end
@@ -26,11 +27,10 @@
     [super viewDidLoad];
     
     launcher = [[MidiLauncher alloc] init];
+    launcher.progressDelegate = self;
     
     snareClip = [[MidiClip alloc] init];
-    snareClip.instrument = kSnare;
-
-//    [snareClip addMessage:[MidiMessage messageWithType:kNoteOn midiKey:24 velocity:80] atPulse:0];
+    snareClip.instrument = kArp;
     
     [launcher addMidiClip:snareClip];
     
@@ -38,16 +38,23 @@
     
     self.midiNoteSlider.transform = CGAffineTransformMakeRotation(- M_PI_2 );
     self.tempoSlider.transform = CGAffineTransformMakeRotation(- M_PI_2 );
+    
+    progressLine = [[UIView alloc] initWithFrame:CGRectMake(self.gridView.frame.origin.x, self.gridView.frame.origin.y, 1.f, 588.f)];
+    progressLine.backgroundColor = [UIColor blackColor];
+    [self.view addSubview:progressLine];
 }
 
 - (IBAction)timeLineChanged:(UISlider*)sender {
     
     if ( sender.value < 16 ) {
         sender.value = 12;
+        [snareClip setNumberOfBars:3];
     } else if ( sender.value >= 16 && sender.value < 20 ) {
         sender.value = 16;
+        [snareClip setNumberOfBars:4];
     } else {
         sender.value = 20;
+        [snareClip setNumberOfBars:5];
     }
     
     [self.gridView setHorizontalSize:sender.value];
@@ -72,16 +79,17 @@
 #pragma mark GridViewDelegate
 
 - (void) cellGotFilled:(BOOL)filled onX:(NSInteger)x onY:(NSInteger)y {
+    [snareClip setCellFilled:filled withHorizontalOffset:x withVerticalOffset:y];
+}
+
+#pragma mark LauncherProgressDelegate
+
+- (void) progressForClip:(NSInteger)clip progress:(CGFloat)progress {
     
-    MidiMessage * onMessage = [MidiMessage messageWithType:kNoteOn midiKey:24 + y velocity:120];
-    MidiMessage * offMessage = [MidiMessage messageWithType:kNoteOff midiKey:24 + y velocity:120];
-    
-    if ( filled ) {
-        [snareClip addMessage:onMessage atPulse:x * kNumberOfPulsesPerQuarterNotes];
-        [snareClip addMessage:offMessage atPulse:x * kNumberOfPulsesPerQuarterNotes + kNumberOfPulsesPerQuarterNotes];
-    } else {
-        [snareClip removeMessage:onMessage atPulse:x * kNumberOfPulsesPerQuarterNotes];
-        [snareClip removeMessage:offMessage atPulse:x * kNumberOfPulsesPerQuarterNotes + kNumberOfPulsesPerQuarterNotes];
+    if ( clip == 0 ) {
+        
+        progressLine.frame = CGRectMake(self.gridView.frame.origin.x + self.gridView.frame.size.width * progress, progressLine.frame.origin.y, progressLine.frame.size.width, progressLine.frame.size.height);
+        
     }
     
 }

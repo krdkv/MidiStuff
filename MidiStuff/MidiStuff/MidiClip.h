@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-#define kNumberOfPulsesPerQuarterNotes 24
+#define kNumberOfPulsesPerQuarterNote 24
 
 @class MidiMessage;
 
@@ -20,20 +20,18 @@ typedef enum {
 
 @interface MidiClip : NSObject
 
-- (id) init;
+- (id) initWithNumberOfBars:(NSInteger)numberOfBars;
 
-- (id) initWithUpperTimeSignature:(NSInteger)upperSignature
-            andLowerTimeSignature:(NSInteger)lowerSignature;
+- (void) setNumberOfBars:(NSInteger)numberOfBars;
+- (NSInteger) numberOfBars;
+- (NSInteger) numberOfPulsesPerBar;
 
-- (void) addMessage:(MidiMessage*)message atPulse:(NSInteger)pulse;
-
-- (void) removeMessage:(MidiMessage*)message atPulse:(NSInteger)pulse;
+- (void) setCellFilled:(BOOL)filled
+  withHorizontalOffset:(NSInteger)hOffset
+    withVerticalOffset:(NSInteger)vOffset;
 
 - (NSArray*) messagesForPulse:(NSInteger)pulse;
-
 - (CGFloat) progressForPulse:(NSInteger)pulse;
-
-- (NSInteger) numberOfPulses;
 
 @property (nonatomic, assign) Instrument instrument;
 

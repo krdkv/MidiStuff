@@ -96,7 +96,8 @@ enum {
 - (BOOL) createAUGraph {
     
 	OSStatus result = noErr;
-	AUNode arpNode, hornNode, snareNode, ioNode, mixerNode;
+    
+    AUNode arpNode, hornNode, snareNode, ioNode, mixerNode;
     
 	AudioComponentDescription cd = {};
 	cd.componentManufacturer     = kAudioUnitManufacturer_Apple;
@@ -108,7 +109,7 @@ enum {
     
 	cd.componentType = kAudioUnitType_MusicDevice;
 	cd.componentSubType = kAudioUnitSubType_Sampler;
-	
+    
 	result = AUGraphAddNode (self.processingGraph, &cd, &arpNode);
     NSCAssert (result == noErr, @"Unable to add the Sampler unit to the audio processing graph. Error code: %d '%.4s'", (int) result, (const char *)&result);
     
@@ -189,7 +190,6 @@ enum {
     
     result =    AudioUnitSetProperty ( self.snareUnit, kAudioUnitProperty_SampleRate, kAudioUnitScope_Output, 0, &_graphSampleRate, sampleRatePropertySize);
     NSAssert (result == noErr, @"AudioUnitSetProperty (set Sampler unit output stream sample rate). Error code: %d '%.4s'", (int) result, (const char *)&result);
-    
     
     
     
@@ -298,11 +298,20 @@ enum {
     return YES;
 }
 
+- (void) start {
+	AudioUnitSetParameter (_mixerUnit, kMultiChannelMixerParam_Volume, kAudioUnitScope_Output, 0, 1.f, 0);
+}
+
+- (void) stop {
+    AudioUnitSetParameter (_mixerUnit, kMultiChannelMixerParam_Volume, kAudioUnitScope_Output, 0, 0.f, 0);
+}
+
 - (void) stopAudioProcessingGraph {
     
     OSStatus result = noErr;
 	if (self.processingGraph) result = AUGraphStop(self.processingGraph);
     NSAssert (result == noErr, @"Unable to stop the audio processing graph. Error code: %d '%.4s'", (int) result, (const char *)&result);
+    
 }
 
 - (void) restartAudioProcessingGraph {

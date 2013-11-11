@@ -11,7 +11,7 @@
 
 @protocol MidiLauncherProgressDelegate
 
-- (void) clip:(NSInteger)clip progress:(CGFloat)progress;
+- (void) progressForClip:(NSInteger)clip progress:(CGFloat)progress;
 
 @end
 

@@ -50,10 +50,12 @@
 
 - (void) start {    
     [self startTimer];
+    [player start];
 }
 
 - (void) stop {
     [timer invalidate];
+    [player stop];
     timer = nil;
 }
 
@@ -98,7 +100,7 @@
     }
     
     totalNumberOfPulses = [self numberOfPulsesForAllClips];
-    CGFloat timerInterval = (CGFloat)60 / (CGFloat)tempo / (CGFloat)kNumberOfPulsesPerQuarterNotes;
+    CGFloat timerInterval = (CGFloat)60 / (CGFloat)tempo / (CGFloat)kNumberOfPulsesPerQuarterNote;
     
     timer = [NSTimer scheduledTimerWithTimeInterval:timerInterval target:self selector:@selector(timerTick) userInfo:nil repeats:YES];
     [[NSRunLoop mainRunLoop] addTimer:timer forMode:NSRunLoopCommonModes];
@@ -110,10 +112,8 @@
         
         MidiClip * clip = clips[clipIndex];
         
-        if ( pulseCounter % kNumberOfPulsesPerQuarterNotes == 0 ) {
-            if ( self.progressDelegate ) {
-                [self.progressDelegate clip:clipIndex progress:[clip progressForPulse:pulseCounter]];
-            }
+        if ( self.progressDelegate ) {
+            [self.progressDelegate progressForClip:clipIndex progress:[clip progressForPulse:pulseCounter]];
         }
         
         NSArray * messages = [clip messagesForPulse:pulseCounter];
@@ -138,7 +138,7 @@
 
 - (NSInteger) numberOfPulsesForAllClips {
 #warning Hardcoded: should be replaced with lcm for clips
-    return 4 * 4 * kNumberOfPulsesPerQuarterNotes;
+    return 3 * 4 * kNumberOfPulsesPerQuarterNote;
 }
 
 @end
