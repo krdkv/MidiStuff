@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-#define kNumberOfPulsesPerQuarterNote 24
+#define kNumberOfPulsesPerQuarterNote 4
 
 @class MidiMessage;
 

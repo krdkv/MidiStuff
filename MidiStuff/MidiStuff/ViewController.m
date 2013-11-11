@@ -30,7 +30,7 @@
     launcher.progressDelegate = self;
     
     snareClip = [[MidiClip alloc] init];
-    snareClip.instrument = kArp;
+    snareClip.instrument = kSnare;
     
     [launcher addMidiClip:snareClip];
     
