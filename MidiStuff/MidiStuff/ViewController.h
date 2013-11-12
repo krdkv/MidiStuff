@@ -12,7 +12,8 @@
 
 @interface ViewController : UIViewController <GridViewDelegate, MidiLauncherProgressDelegate>
 
-@property (nonatomic, strong) IBOutlet GridView * gridView;
+@property (nonatomic, strong) IBOutlet GridView * snareGridView;
+@property (nonatomic, strong) IBOutlet GridView * synthGridView;
 
 @property (nonatomic, strong) IBOutlet UISlider * midiNoteSlider;
 @property (nonatomic, strong) IBOutlet UISlider * tempoSlider;

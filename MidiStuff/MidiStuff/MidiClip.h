@@ -24,7 +24,10 @@ typedef enum {
 - (id) initWithNumberOfBars:(NSInteger)numberOfBars;
 
 - (void) setNumberOfBars:(NSInteger)numberOfBars;
+
 - (NSInteger) numberOfPulses;
+
+- (NSInteger) numberOfCells;
 
 - (void) setCellFilled:(BOOL)filled
   withHorizontalOffset:(NSInteger)hOffset

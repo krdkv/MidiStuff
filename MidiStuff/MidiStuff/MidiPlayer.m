@@ -59,9 +59,6 @@ enum {
 - (void) forwardMessage:(MidiMessage*)message
          withInstrument:(Instrument)instrument {
     
-    
-    //    onVelocity += 50;
-    
 	UInt32 noteCommand;
     
     switch (message.type) {

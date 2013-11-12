@@ -12,7 +12,12 @@
                         <rect key="frame" x="0.0" y="0.0" width="1024" height="768"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view multipleTouchEnabled="YES" contentMode="scaleToFill" id="Vb5-eT-L7H" customClass="GridView">
+                            <view multipleTouchEnabled="YES" tag="1" contentMode="scaleToFill" id="Vb5-eT-L7H" customClass="GridView">
+                                <rect key="frame" x="80" y="100" width="864" height="588"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                            </view>
+                            <view hidden="YES" multipleTouchEnabled="YES" tag="2" contentMode="scaleToFill" id="Ldu-US-K6A" customClass="GridView">
                                 <rect key="frame" x="80" y="100" width="864" height="588"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -62,14 +67,27 @@
                                     <action selector="pausePressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="YCP-L9-LCt"/>
                                 </connections>
                             </button>
+                            <segmentedControl opaque="NO" contentMode="scaleToFill" selected="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" id="Q9t-w2-fZ2">
+                                <rect key="frame" x="816" y="720" width="128" height="29"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <segments>
+                                    <segment title="snare"/>
+                                    <segment title="synth"/>
+                                </segments>
+                                <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <connections>
+                                    <action selector="clipSelected:" destination="BYZ-38-t0r" eventType="valueChanged" id="UZ6-ep-nOz"/>
+                                </connections>
+                            </segmentedControl>
                         </subviews>
                         <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                         <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                     </view>
                     <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                     <connections>
-                        <outlet property="gridView" destination="Vb5-eT-L7H" id="pj0-IR-bHL"/>
                         <outlet property="midiNoteSlider" destination="yRh-GM-gpa" id="jut-a7-LCz"/>
+                        <outlet property="snareGridView" destination="Vb5-eT-L7H" id="Xhz-0t-lQk"/>
+                        <outlet property="synthGridView" destination="Ldu-US-K6A" id="wz6-yh-7CD"/>
                         <outlet property="tempoSlider" destination="cdy-Fj-wQh" id="E0s-Xz-E8l"/>
                     </connections>
                 </viewController>

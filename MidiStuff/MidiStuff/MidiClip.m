@@ -107,9 +107,15 @@
 
 - (NSInteger) midiNoteForVerticalOffset:(NSInteger)offset {
     
-#warning Snare drum implementation only
-    return 24 + offset;
+    if ( self.instrument == kSnare ) {
+        return 24 + offset;
+    }
     
+    if ( self.instrument == kArp ) {
+        return 40 + offset;
+    }
+    
+    return 24 + offset;
 }
 
 - (void) removeMessage:(MidiMessage*)message atPulse:(NSInteger)pulse {
@@ -293,6 +299,12 @@
     }
     
     return NO;
+    
+}
+
+- (NSInteger) numberOfCells {
+    
+    return numberOfBars * 4 * upperTimeSignature / lowerTimeSignature;
     
 }
 
