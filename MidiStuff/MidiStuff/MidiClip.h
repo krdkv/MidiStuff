@@ -8,7 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
-#define kNumberOfPulsesPerQuarterNote 4
+#define kNumberOfPulsesPerQuarterNote 8
+@class MidiLauncher;
 
 @class MidiMessage;
 
@@ -23,8 +24,7 @@ typedef enum {
 - (id) initWithNumberOfBars:(NSInteger)numberOfBars;
 
 - (void) setNumberOfBars:(NSInteger)numberOfBars;
-- (NSInteger) numberOfBars;
-- (NSInteger) numberOfPulsesPerBar;
+- (NSInteger) numberOfPulses;
 
 - (void) setCellFilled:(BOOL)filled
   withHorizontalOffset:(NSInteger)hOffset

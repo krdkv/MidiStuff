@@ -80,7 +80,7 @@ typedef struct Cell Cell;
     for ( NSValue * key in filledCells.allKeys ) {
         Cell cell;
         [key getValue:&cell];
-        if ( cell.x > _horizontalSize || cell.y > _verticalSize ) {
+        if ( cell.x >= _horizontalSize || cell.y >= _verticalSize ) {
             if ( self.delegate ) {
                 [self.delegate cellGotFilled:NO onX:cell.x onY:cell.y];
             }

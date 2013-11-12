@@ -16,27 +16,20 @@
 
 #define kDefaultInstrument kSnare
 
-struct Pulse {
-    NSInteger barIndex;
-    NSInteger barOffset;
-};
-typedef struct Pulse Pulse;
-
 @interface MidiClip() {
     NSInteger upperTimeSignature;
     NSInteger lowerTimeSignature;
-    NSInteger numberOfPulsesPerQuarterNote;
     
-    NSMutableArray * bars;
+    NSMutableDictionary * pulses;
     
     NSInteger numberOfPulsesPerBar;
+    
+    NSInteger numberOfBars;
 }
 
 - (void) addMessage:(MidiMessage*)message atPulse:(NSInteger)pulse;
 - (void) removeMessage:(MidiMessage*)message atPulse:(NSInteger)pulse;
-- (void) barIndex:(NSInteger*)barIndex andBarOffset:(NSInteger*)barOffset forPulse:(NSInteger)pulse;
 - (NSInteger) midiNoteForVerticalOffset:(NSInteger)offset;
-- (BOOL) messageExistsAtPulse:(NSInteger)pulse message:(MidiMessage*)message;
 
 @end
 
@@ -47,132 +40,67 @@ typedef struct Pulse Pulse;
     return [self initWithNumberOfBars:3];
 }
 
-- (id) initWithNumberOfBars:(NSInteger)numberOfBars {
+- (id) initWithNumberOfBars:(NSInteger)number {
     self = [super init];
     if (self) {
         upperTimeSignature = kDefaultUpperTimeSignature;
         lowerTimeSignature = kDefaultLowerTimeSignature;
-        numberOfPulsesPerQuarterNote = kNumberOfPulsesPerQuarterNote;
-        bars = [[NSMutableArray alloc] init];
+        pulses = [[NSMutableDictionary alloc] init];
         
-        for ( int i = 0; i < numberOfBars; ++i ) {
-            [bars addObject:[[NSMutableDictionary alloc] init]];
-        }
+        numberOfBars = number;
         
         self.instrument = kDefaultInstrument;
         
-        numberOfPulsesPerBar = ( numberOfPulsesPerQuarterNote * upperTimeSignature * 4 ) /
+        numberOfPulsesPerBar = ( kNumberOfPulsesPerQuarterNote * upperTimeSignature * 4 ) /
             lowerTimeSignature;
     }
     return self;
 }
 
-- (void) setNumberOfBars:(NSInteger)numberOfBars {
-    
-    if ( bars.count == numberOfBars ) {
-        return;
-    } else if ( bars.count < numberOfBars ) {
-        for ( int i = 0; i < numberOfBars - bars.count; ++i ) {
-            [bars addObject:[[NSMutableDictionary alloc] init]];
-        }
-    } else if ( bars.count > numberOfBars ) {
-        for ( int i = bars.count - 1; i >= numberOfBars; --i ) {
-            [bars removeObjectAtIndex:i];
-        }
-    }
-    
+- (void) setNumberOfBars:(NSInteger)number {
+    numberOfBars = number;
+}
+
+- (NSInteger) numberOfPulses {
+    return numberOfBars * numberOfPulsesPerBar;
 }
 
 - (NSInteger) numberOfBars {
-    return bars.count;
+    return numberOfBars;
 }
 
 - (NSInteger) numberOfPulsesPerBar {
     return numberOfPulsesPerBar;
 }
 
-- (void) setCellFilled:(BOOL)filled
-  withHorizontalOffset:(NSInteger)hOffset
-    withVerticalOffset:(NSInteger)vOffset {
-    
-    NSInteger pulse = hOffset * numberOfPulsesPerQuarterNote;
-    
-    NSInteger midiNote = [self midiNoteForVerticalOffset:vOffset];
-    
-    BOOL leftNeighbourExists = [self leftNeighbourExistsAtPulse:pulse forNote:midiNote];
-    
-    BOOL rightNeighbourExists = [self rightNeighbourExistsAtPulse:pulse forNote:midiNote];
-    
-    if ( filled ) {
-        
-        if ( ! leftNeighbourExists && ! rightNeighbourExists ) {
-            [self addMessage:[MidiMessage messageWithType:kNoteOn midiKey:midiNote velocity:kDefaultVelocity] atPulse:pulse];
-            [self addMessage:[MidiMessage messageWithType:kNoteOff midiKey:midiNote velocity:kDefaultVelocity] atPulse:pulse + numberOfPulsesPerQuarterNote];
-        } else if ( leftNeighbourExists && ! rightNeighbourExists ) {
-            [self removeMessage:[MidiMessage messageWithType:kNoteOff midiKey:midiNote velocity:kDefaultVelocity] atPulse:pulse];
-            [self addMessage:[MidiMessage messageWithType:kNoteOff midiKey:midiNote velocity:kDefaultVelocity] atPulse:pulse + numberOfPulsesPerQuarterNote];
-        } else if ( ! leftNeighbourExists && rightNeighbourExists ) {
-            [self removeMessage:[MidiMessage messageWithType:kNoteOn midiKey:midiNote velocity:kDefaultVelocity] atPulse:pulse + numberOfPulsesPerQuarterNote];
-            [self addMessage:[MidiMessage messageWithType:kNoteOn midiKey:midiNote velocity:kDefaultVelocity] atPulse:pulse];
-        } else {
-            [self removeMessage:[MidiMessage messageWithType:kNoteOff midiKey:midiNote velocity:kDefaultVelocity] atPulse:pulse];
-            [self removeMessage:[MidiMessage messageWithType:kNoteOn midiKey:midiNote velocity:kDefaultVelocity] atPulse:pulse + numberOfPulsesPerQuarterNote];
-        }
-        
-    } else {
-        
-        if ( ! leftNeighbourExists && ! rightNeighbourExists ) {
-            [self removeMessage:[MidiMessage messageWithType:kNoteOn midiKey:midiNote velocity:kDefaultVelocity] atPulse:pulse];
-            [self removeMessage:[MidiMessage messageWithType:kNoteOff midiKey:midiNote velocity:kDefaultVelocity] atPulse:pulse + numberOfPulsesPerQuarterNote];
-        } else if ( leftNeighbourExists && ! rightNeighbourExists ) {
-            [self removeMessage:[MidiMessage messageWithType:kNoteOff midiKey:midiNote velocity:kDefaultVelocity] atPulse:pulse + numberOfPulsesPerQuarterNote];
-            [self addMessage:[MidiMessage messageWithType:kNoteOff midiKey:midiNote velocity:kDefaultVelocity] atPulse:pulse];
-        } else if ( ! leftNeighbourExists && rightNeighbourExists ) {
-            [self removeMessage:[MidiMessage messageWithType:kNoteOn midiKey:midiNote velocity:kDefaultVelocity] atPulse:pulse];
-            [self addMessage:[MidiMessage messageWithType:kNoteOn midiKey:midiNote velocity:kDefaultVelocity] atPulse:pulse + numberOfPulsesPerQuarterNote];
-        } else {
-            [self addMessage:[MidiMessage messageWithType:kNoteOff midiKey:midiNote velocity:kDefaultVelocity] atPulse:pulse];
-            [self addMessage:[MidiMessage messageWithType:kNoteOn midiKey:midiNote velocity:kDefaultVelocity] atPulse:pulse + numberOfPulsesPerQuarterNote];
-        }
-        
-    }
-    
-    
-}
-
 - (NSArray*) messagesForPulse:(NSInteger)pulse {
     
-    NSInteger barIndex, barOffset;
-    [self barIndex:&barIndex andBarOffset:&barOffset forPulse:pulse];
-    
-    if ( barIndex == -1 || barOffset == -1 ) {
+    if ( pulse < 0 ) {
         return nil;
     }
     
-    if ( barIndex >= bars.count ) {
+    while ( pulse >= [self numberOfPulses] ) {
+        pulse -= [self numberOfPulses];
+    }
+    
+    if ( pulse < 0 ) {
         return nil;
     }
     
-    NSDictionary * bar = bars[barIndex];
-    
-    return bar[@(barOffset)];
+    return pulses[@(pulse)];
 }
 
 - (CGFloat) progressForPulse:(NSInteger)pulse {
     
-    if ( bars.count == 0 ) {
-        return 0.f;
-    }
-    
-    while ( pulse >= numberOfPulsesPerBar * bars.count ) {
-        pulse -= numberOfPulsesPerBar * bars.count;
+    while ( pulse >= [self numberOfPulses] ) {
+        pulse -= [self numberOfPulses];
     }
     
     if ( pulse < 0 ) {
         return 0.f;
     }
     
-    return (CGFloat)pulse / (CGFloat)(numberOfPulsesPerBar * bars.count);
+    return (CGFloat)pulse / (CGFloat)([self numberOfPulses]);
 }
 
 #pragma mark Private
@@ -186,23 +114,18 @@ typedef struct Pulse Pulse;
 
 - (void) removeMessage:(MidiMessage*)message atPulse:(NSInteger)pulse {
     
-    NSInteger barIndex = pulse / numberOfPulsesPerBar;
-    if ( barIndex >= bars.count ) {
+    if ( pulse < 0 || pulse > [self numberOfPulses] ) {
         return;
     }
     
-    NSMutableDictionary * bar = bars[barIndex];
-    
-    NSInteger barOffset = pulse % numberOfPulsesPerBar;
-    
-    NSMutableArray * messagesAtPulse = bar[@(barOffset)];
+    NSMutableArray * messagesAtPulse = pulses[@(pulse)];
     
     if ( messagesAtPulse ) {
         for ( MidiMessage * currentMessage in messagesAtPulse ) {
             if ( [currentMessage isEqualToMessage:message] ) {
                 [messagesAtPulse removeObject:currentMessage];
                 if ( messagesAtPulse.count == 0 ) {
-                    [bar removeObjectForKey:@(barOffset)];
+                    [pulses removeObjectForKey:@(pulse)];
                 }
                 break;
             }
@@ -212,136 +135,165 @@ typedef struct Pulse Pulse;
 
 - (void) addMessage:(MidiMessage*)message atPulse:(NSInteger)pulse {
     
-    NSInteger barIndex = pulse / numberOfPulsesPerBar;
-    if ( barIndex >= bars.count ) {
+    if ( pulse < 0 || pulse > [self numberOfPulses] ) {
         return;
     }
     
-    NSMutableDictionary * bar = bars[barIndex];
-    
-    NSInteger barOffset = pulse % numberOfPulsesPerBar;
-    
-    if ( ! bar[@(barOffset)] ) {
-        [bar setObject:[[NSMutableArray alloc] init]
-                forKey:@(barOffset)];
+    if ( ! pulses[@(pulse)] ) {
+        [pulses setObject:[[NSMutableArray alloc] init] forKey:@(pulse)];
     }
     
-    [(NSMutableArray*)bar[@(barOffset)] addObject:message];
+    [(NSMutableArray*)pulses[@(pulse)] addObject:message];
 }
 
-- (void) barIndex:(NSInteger*)barIndex
-     andBarOffset:(NSInteger*)barOffset
-         forPulse:(NSInteger)pulse {
-    
-    if ( bars.count == 0 ) {
-        *barIndex = -1;
-        *barOffset = -1;
-        return;
-    }
-    
-    while ( pulse >= numberOfPulsesPerBar * bars.count ) {
-        pulse -= numberOfPulsesPerBar * bars.count;
-    }
-    
-    if ( pulse < 0 ) {
-        *barIndex = -1;
-        *barOffset = -1;
-        return;
-    }
-    
-    *barIndex = pulse / numberOfPulsesPerBar;
-    *barOffset = pulse % numberOfPulsesPerBar;
-}
+#pragma mark Cell related methods
 
-- (BOOL) leftNeighbourExistsAtPulse:(NSInteger)pulse forNote:(NSInteger)note {
+- (void) setCellFilled:(BOOL)filled
+  withHorizontalOffset:(NSInteger)hOffset
+    withVerticalOffset:(NSInteger)vOffset {
     
-    NSInteger currentPulse = pulse;
+    NSInteger pulse = hOffset * kNumberOfPulsesPerQuarterNote;
     
-    while ( currentPulse >= 0 ) {
+    NSInteger midiNote = [self midiNoteForVerticalOffset:vOffset];
+    
+    BOOL leftNeighbourExists = [self leftNeighbourExistsForCell:hOffset forNote:midiNote];
+    BOOL rightNeighbourExists = [self rightNeighbourExistsForCell:hOffset forNote:midiNote];
+    
+    if ( filled ) {
         
-        NSArray * messages = [self messagesForPulse:currentPulse];
-        
-        BOOL offMessageExists = NO, onMessageExists = NO;
-        
-        for ( MidiMessage * currentMessage in messages ) {
+        if ( ! leftNeighbourExists && ! rightNeighbourExists ) {
             
-            if ( currentMessage.midiKey == note ) {
-                if ( currentMessage.type == kNoteOn ) {
-                    onMessageExists = YES;
-                } else if ( currentMessage.type == kNoteOff ) {
-                    offMessageExists = YES;
-                }
-            }
+            [self addMessage:[MidiMessage messageWithType:kNoteOn midiKey:midiNote velocity:kDefaultVelocity] atPulse:pulse];
+            [self addMessage:[MidiMessage messageWithType:kNoteOff midiKey:midiNote velocity:kDefaultVelocity] atPulse:pulse + kNumberOfPulsesPerQuarterNote - 1];
+            
+        } else if ( leftNeighbourExists && ! rightNeighbourExists ) {
+            
+            [self removeMessage:[MidiMessage messageWithType:kNoteOff midiKey:midiNote velocity:kDefaultVelocity] atPulse: pulse - 1];
+            [self addMessage:[MidiMessage messageWithType:kNoteOff midiKey:midiNote velocity:kDefaultVelocity] atPulse:pulse + kNumberOfPulsesPerQuarterNote - 1];
+            
+        } else if ( ! leftNeighbourExists && rightNeighbourExists ) {
+            
+            [self removeMessage:[MidiMessage messageWithType:kNoteOn midiKey:midiNote velocity:kDefaultVelocity] atPulse:pulse + kNumberOfPulsesPerQuarterNote];
+            [self addMessage:[MidiMessage messageWithType:kNoteOn midiKey:midiNote velocity:kDefaultVelocity] atPulse:pulse];
+            
+        } else {
+            
+            [self removeMessage:[MidiMessage messageWithType:kNoteOff midiKey:midiNote velocity:kDefaultVelocity] atPulse:pulse - 1];
+            [self removeMessage:[MidiMessage messageWithType:kNoteOn midiKey:midiNote velocity:kDefaultVelocity] atPulse:pulse + kNumberOfPulsesPerQuarterNote];
+            
         }
         
-        if ( currentPulse == pulse && offMessageExists ) {
+    } else {
+        
+        if ( ! leftNeighbourExists && ! rightNeighbourExists ) {
+            
+            [self removeMessage:[MidiMessage messageWithType:kNoteOn midiKey:midiNote velocity:kDefaultVelocity] atPulse:pulse];
+            [self removeMessage:[MidiMessage messageWithType:kNoteOff midiKey:midiNote velocity:kDefaultVelocity] atPulse:pulse + kNumberOfPulsesPerQuarterNote - 1];
+            
+        } else if ( leftNeighbourExists && ! rightNeighbourExists ) {
+            
+            [self removeMessage:[MidiMessage messageWithType:kNoteOff midiKey:midiNote velocity:kDefaultVelocity] atPulse:pulse + kNumberOfPulsesPerQuarterNote - 1];
+            [self addMessage:[MidiMessage messageWithType:kNoteOff midiKey:midiNote velocity:kDefaultVelocity] atPulse:pulse - 1];
+            
+        } else if ( ! leftNeighbourExists && rightNeighbourExists ) {
+
+            [self removeMessage:[MidiMessage messageWithType:kNoteOn midiKey:midiNote velocity:kDefaultVelocity] atPulse:pulse];
+            [self addMessage:[MidiMessage messageWithType:kNoteOn midiKey:midiNote velocity:kDefaultVelocity] atPulse:pulse + kNumberOfPulsesPerQuarterNote];
+            
+        } else {
+
+            [self addMessage:[MidiMessage messageWithType:kNoteOff midiKey:midiNote velocity:kDefaultVelocity] atPulse:pulse - 1];
+            [self addMessage:[MidiMessage messageWithType:kNoteOn midiKey:midiNote velocity:kDefaultVelocity] atPulse:pulse + kNumberOfPulsesPerQuarterNote];
+            
+        }
+        
+    }
+    
+    
+}
+
+- (BOOL) cellHasStartMessage:(NSInteger)cell withNote:(NSInteger)key {
+    NSArray * startOfCellMessages = [self messagesForPulse:cell * kNumberOfPulsesPerQuarterNote];
+    BOOL onMessageExists = NO;
+    
+    for ( MidiMessage * currentMesage in startOfCellMessages ) {
+        if ( currentMesage.type == kNoteOn && currentMesage.midiKey == key ) {
+            onMessageExists = YES;
+            break;
+        }
+    }
+    
+    return onMessageExists;
+}
+
+- (BOOL) cellHasStopMessage:(NSInteger)cell withNote:(NSInteger)key {
+    NSArray * stopOfCellMessages = [self messagesForPulse:(cell+1) * kNumberOfPulsesPerQuarterNote - 1];
+    BOOL offMessageExists = NO;
+    
+    for ( MidiMessage * currentMesage in stopOfCellMessages ) {
+        if ( currentMesage.type == kNoteOff && currentMesage.midiKey == key ) {
+            offMessageExists = YES;
+            break;
+        }
+    }
+    
+    return offMessageExists;
+}
+
+- (BOOL) leftNeighbourExistsForCell:(NSInteger)cell forNote:(NSInteger)note {
+    
+    NSInteger currentCell = cell - 1;
+    
+    while (currentCell >= 0) {
+        
+        BOOL onMessageExists  = [self cellHasStartMessage:currentCell withNote:note];
+        BOOL offMessageExists = [self cellHasStopMessage:currentCell withNote:note];
+        
+        if ( currentCell == cell - 1 && (offMessageExists || onMessageExists) ) {
             return YES;
         }
         
-        if ( currentPulse != pulse && offMessageExists ) {
+        if ( currentCell != cell - 1 && offMessageExists ) {
             return NO;
         }
         
-        if ( currentPulse != pulse && onMessageExists ) {
+        if ( currentCell != cell - 1 && onMessageExists ) {
             return YES;
         }
         
-        currentPulse -= numberOfPulsesPerQuarterNote;
+        currentCell -= 1;
     }
     
     return NO;
+    
 }
 
-- (BOOL) rightNeighbourExistsAtPulse:(NSInteger)pulse forNote:(NSInteger)note {
+- (BOOL) rightNeighbourExistsForCell:(NSInteger)cell forNote:(NSInteger)note {
     
-    NSInteger currentPulse = pulse;
+    NSInteger currentCell = cell + 1;
     
-    while ( currentPulse != numberOfPulsesPerBar * bars.count - numberOfPulsesPerQuarterNote ) {
+    while ( currentCell < numberOfBars * ( upperTimeSignature * 4 / lowerTimeSignature ) ) {
         
-        NSArray * messages = [self messagesForPulse:currentPulse + numberOfPulsesPerQuarterNote];
+        BOOL onMessageExists  = [self cellHasStartMessage:currentCell withNote:note];
+        BOOL offMessageExists = [self cellHasStopMessage:currentCell withNote:note];
         
-        BOOL offMessageExists = NO, onMessageExists = NO;
-        
-        for ( MidiMessage * currentMessage in messages ) {
-            
-            if ( currentMessage.midiKey == note ) {
-                if ( currentMessage.type == kNoteOn ) {
-                    onMessageExists = YES;
-                } else if ( currentMessage.type == kNoteOff ) {
-                    offMessageExists = YES;
-                }
-            }
-        }
-        
-        if ( currentPulse == pulse && onMessageExists ) {
+        if ( currentCell == cell + 1 && (onMessageExists || offMessageExists) ) {
             return YES;
         }
         
-        if ( currentPulse != pulse && onMessageExists ) {
+        if ( currentCell != cell + 1 && onMessageExists ) {
             return NO;
         }
         
-        if ( currentPulse != pulse && offMessageExists ) {
+        if ( currentCell != cell + 1 && offMessageExists ) {
             return YES;
         }
         
-        currentPulse += numberOfPulsesPerQuarterNote;
+        currentCell += 1;
     }
     
     return NO;
-}
-
-- (BOOL) messageExistsAtPulse:(NSInteger)pulse message:(MidiMessage*)message {
     
-    NSArray * messages = [self messagesForPulse:pulse];
-    
-    for ( MidiMessage * currentMessage in messages ) {
-        if ( [currentMessage isEqualToMessage:message] ) {
-            return YES;
-        }
-    }
-    
-    return NO;
 }
 
 @end

@@ -26,6 +26,8 @@
 
 - (void) setClipEnabled:(NSInteger)clip enabled:(BOOL)enabled;
 
+- (void) setNumberOfBars:(NSInteger)numberOfBars forClip:(NSInteger)clipNumber;
+
 @property (nonatomic, strong) id<MidiLauncherProgressDelegate> progressDelegate;
 
 @end

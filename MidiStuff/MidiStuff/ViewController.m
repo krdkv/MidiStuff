@@ -15,6 +15,7 @@
 @interface ViewController () {
     MidiLauncher * launcher;
     MidiClip * snareClip;
+    MidiClip * synthClip;
     UIView * progressLine;
 }
 
@@ -32,7 +33,11 @@
     snareClip = [[MidiClip alloc] init];
     snareClip.instrument = kSnare;
     
+    synthClip = [[MidiClip alloc] initWithNumberOfBars:4];
+    synthClip.instrument = kArp;
+    
     [launcher addMidiClip:snareClip];
+    [launcher addMidiClip:synthClip];
     
     self.gridView.delegate = self;
     
@@ -48,16 +53,17 @@
     
     if ( sender.value < 16 ) {
         sender.value = 12;
-        [snareClip setNumberOfBars:3];
+        [launcher setNumberOfBars:3 forClip:0];
+        [self.gridView setHorizontalSize:12];
     } else if ( sender.value >= 16 && sender.value < 20 ) {
         sender.value = 16;
-        [snareClip setNumberOfBars:4];
+        [launcher setNumberOfBars:4 forClip:0];
+        [self.gridView setHorizontalSize:16];
     } else {
         sender.value = 20;
-        [snareClip setNumberOfBars:5];
+        [launcher setNumberOfBars:5 forClip:0];
+        [self.gridView setHorizontalSize:20];
     }
-    
-    [self.gridView setHorizontalSize:sender.value];
 }
 
 - (IBAction)noteIntervalChanged:(UISlider*)sender {
